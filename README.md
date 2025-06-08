@@ -88,8 +88,8 @@ Untuk menjalankan notebook ini di lingkungan lokal, disarankan untuk membuat *en
 
 1.  **Clone Repositori (jika ada)**
     ```bash
-    git clone [https://www.andarepository.com/](https://www.andarepository.com/)
-    cd [nama folder proyek]
+    git clone https://github.com/DianPandus/KitaFit.git
+    cd Notebook
     ```
 
 2.  **Buat Environment Conda Baru**
