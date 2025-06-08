@@ -1,0 +1,20 @@
+# =================================================================
+#               File Kebutuhan untuk Proyek KitaFit API
+# =================================================================
+#
+# Gunakan perintah berikut di terminal untuk menginstal semua pustaka:
+# pip install -r requirements.txt
+#
+# -----------------------------------------------------------------
+
+# Pustaka esensial untuk komputasi numerik di Python
+numpy==1.24.3
+
+# Pustaka untuk analisis dan manipulasi data (digunakan untuk DataFrame)
+pandas==2.0.3
+
+# Library utama untuk memuat dan menjalankan model .h5 (Keras)
+tensorflow==2.13.0
+
+# Pustaka untuk machine learning, termasuk memuat objek preprocessor
+scikit-learn==1.3.0
