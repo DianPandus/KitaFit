@@ -7,14 +7,22 @@
 #
 # -----------------------------------------------------------------
 
-# Pustaka esensial untuk komputasi numerik di Python
+
+# Framework untuk membuat web server/API
+flask==2.3.2
+flask-cors==4.0.0  # Menangani masalah CORS
+
+# Untuk komputasi numerik
 numpy==1.24.3
 
-# Pustaka untuk analisis dan manipulasi data (digunakan untuk DataFrame)
+# Untuk manipulasi data
 pandas==2.0.3
 
-# Library utama untuk memuat dan menjalankan model .h5 (Keras)
+# Library utama untuk deep learning
 tensorflow==2.13.0
 
-# Pustaka untuk machine learning, termasuk memuat objek preprocessor
+# Untuk memuat objek preprocessor
 scikit-learn==1.3.0
+
+# Server WSGI untuk menjalankan aplikasi Flask di produksi
+gunicorn==21.2.0
