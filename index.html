@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>KitaFit - Deteksi Jantung</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      /* General Styling */
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+      }
+      h1,
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      /* Form Styling */
+      form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        align-items: center;
+      }
+      label {
+        font-weight: bold;
+      }
+      input,
+      select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 15px;
+      }
+      button {
+        grid-column: 1 / -1;
+        padding: 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      /* Result Styling */
+      #result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 4px;
+        background-color: #f0f0f0;
+      }
+      .result-tinggi {
+        background-color: #ffdddd;
+        border-left: 5px solid #f44336;
+      }
+      .result-sedang {
+        background-color: #fff4dd;
+        border-left: 5px solid #ff9800;
+      }
+      .result-rendah {
+        background-color: #ddffdd;
+        border-left: 5px solid #4caf50;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Form Deteksi Penyakit Jantung</h1>
+    <p style="text-align: center; font-size: 14px; color: #666">
+      Masukkan data sesuai dengan hasil pemeriksaan medis Anda untuk mendapatkan
+      prediksi tingkat risiko.
+    </p>
+
+    <!-- The form contains inputs for all features required by the model -->
+    <form id="heart-form">
+      <!-- Numerical Features -->
+      <label for="age">Usia:</label>
+      <input type="number" id="age" name="age" value="65" required />
+
+      <label for="trestbps">Tekanan Darah Istirahat (mm Hg):</label>
+      <input type="number" id="trestbps" name="trestbps" value="160" required />
+
+      <label for="chol">Kolesterol (mg/dl):</label>
+      <input type="number" id="chol" name="chol" value="280" required />
+
+      <label for="thalch">Detak Jantung Maks:</label>
+      <input type="number" id="thalch" name="thalch" value="110" required />
+
+      <label for="oldpeak">Oldpeak:</label>
+      <input
+        type="number"
+        step="0.1"
+        id="oldpeak"
+        name="oldpeak"
+        value="2.5"
+        required
+      />
+
+      <label for="ca">Jumlah Pembuluh Darah (ca):</label>
+      <input type="number" id="ca" name="ca" value="3" required />
+
+      <!-- Categorical Features -->
+      <label for="sex">Jenis Kelamin:</label>
+      <select id="sex" name="sex">
+        <option value="Male">Pria</option>
+        <option value="Female">Wanita</option>
+      </select>
+
+      <label for="cp">Tipe Nyeri Dada (cp):</label>
+      <select id="cp" name="cp">
+        <option value="asymptomatic">Asymptomatic</option>
+        <option value="typical angina">Typical Angina</option>
+        <option value="atypical angina">Atypical Angina</option>
+        <option value="non-anginal">Non-anginal Pain</option>
+      </select>
+
+      <label for="fbs">Gula Darah Puasa > 120 (fbs):</label>
+      <select id="fbs" name="fbs">
+        <option value="TRUE">Ya (Benar)</option>
+        <option value="FALSE">Tidak (Salah)</option>
+      </select>
+
+      <label for="restecg">Hasil EKG Istirahat (restecg):</label>
+      <select id="restecg" name="restecg">
+        <option value="lv hypertrophy">LV Hypertrophy</option>
+        <option value="normal">Normal</option>
+        <option value="st-t abnormality">ST-T Abnormality</option>
+      </select>
+
+      <label for="exang">Angina Akibat Olahraga (exang):</label>
+      <select id="exang" name="exang">
+        <option value="TRUE">Ya (Benar)</option>
+        <option value="FALSE">Tidak (Salah)</option>
+      </select>
+
+      <label for="slope">Slope:</label>
+      <select id="slope" name="slope">
+        <option value="flat">Flat</option>
+        <option value="upsloping">Upsloping</option>
+        <option value="downsloping">Downsloping</option>
+      </select>
+
+      <label for="thal">Thal:</label>
+      <select id="thal" name="thal">
+        <option value="reversable defect">Reversable Defect</option>
+        <option value="normal">Normal</option>
+        <option value="fixed defect">Fixed Defect</option>
+      </select>
+
+      <button type="submit">Prediksi Risiko</button>
+    </form>
+
+    <hr />
+    <h2>Hasil Prediksi</h2>
+    <div id="result">
+      <p>
+        Hasil prediksi akan ditampilkan di sini setelah Anda mengisi form dan
+        menekan tombol prediksi.
+      </p>
+    </div>
+
+    <script>
+      // Add an event listener to the form
+      document
+        .getElementById("heart-form")
+        .addEventListener("submit", async function (event) {
+          // Prevent the form from reloading the page
+          event.preventDefault();
+
+          const resultDiv = document.getElementById("result");
+          resultDiv.innerHTML =
+            "<p>Sedang memproses prediksi, mohon tunggu...</p>";
+          resultDiv.className = ""; // Reset styling
+
+          // 1. Collect data from the form into an object
+          const formData = new FormData(event.target);
+          const inputData = {};
+          const numericFields = [
+            "age",
+            "trestbps",
+            "chol",
+            "thalch",
+            "oldpeak",
+            "ca",
+          ];
+
+          for (let [key, value] of formData.entries()) {
+            // Convert numeric fields from string to number
+            if (numericFields.includes(key)) {
+              inputData[key] = parseFloat(value);
+            } else {
+              inputData[key] = value;
+            }
+          }
+
+          // 2. The address of your running Flask backend API
+          // The "/predict" endpoint is defined in your app.py
+          const apiUrl = "http://127.0.0.1:5000/predict";
+
+          try {
+            // 3. Send data to the API using fetch
+            const response = await fetch(apiUrl, {
+              method: "POST", // Request method
+              headers: {
+                "Content-Type": "application/json", // Tell the server we are sending JSON
+              },
+              body: JSON.stringify(inputData), // Convert JavaScript object to a JSON string
+            });
+
+            // Get the JSON response from the server
+            const result = await response.json();
+
+            // 4. Display the results on the webpage
+            if (response.ok) {
+              let riskClass = "";
+              if (result.tingkat_risiko === "Tinggi") {
+                riskClass = "result-tinggi";
+              } else if (result.tingkat_risiko === "Sedang") {
+                riskClass = "result-sedang";
+              } else {
+                riskClass = "result-rendah";
+              }
+              resultDiv.className = riskClass;
+
+              resultDiv.innerHTML = `
+                        <h3>Tingkat Risiko: ${result.tingkat_risiko}</h3>
+                        <p><strong>Probabilitas Penyakit Jantung:</strong> ${(
+                          result.probability_penyakit_jantung * 100
+                        ).toFixed(2)}%</p>
+                        <p><strong>Interpretasi:</strong> ${
+                          result.interpretasi
+                        }</p>
+                        <p style="font-size: small; color: grey;"><b>Penting:</b> Hasil ini adalah prediksi berdasarkan model dan bukan diagnosis medis. Selalu konsultasikan dengan dokter profesional.</p>
+                    `;
+            } else {
+              // If the server returns an error response
+              resultDiv.className = "result-tinggi";
+              resultDiv.innerHTML = `<p><strong>Error:</strong> ${
+                result.error || "Terjadi kesalahan pada server."
+              }</p>`;
+            }
+          } catch (error) {
+            // If a network error occurs (e.g., server is not running)
+            console.error("Error saat menghubungi API:", error);
+            resultDiv.className = "result-tinggi";
+            resultDiv.innerHTML =
+              "<p>Tidak dapat terhubung ke server prediksi. Pastikan server `app.py` sudah berjalan dan coba lagi nanti.</p>";
+          }
+        });
+    </script>
+  </body>
+</html>
